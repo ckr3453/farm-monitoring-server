@@ -1,0 +1,9 @@
+{
+  "database_info": {
+    "username": "Geobong",
+    "password": "Aa4461087!",
+    "host": "geonchang.synology.me",
+    "port": 3307,
+    "database" : "FarmData"
+  }
+}
