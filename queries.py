@@ -28,7 +28,7 @@ def update(db: Session, id: int, data: dict):
         row = {'id': int(data['id']), 'value1': int(data['value1']), 'value2': data['value2'], 'start_time': data['start_time'][:10], 'in_time': data['in_time'][:10]}
         db.query(models.Geobong).filter(models.Geobong.id == id).update(row)
         db.commit()
-        data_instance = models.Geobong(id=int(data['id']), value1=int(data['value1']), value2=data['value2'], start_time=data['start_time'][:10], in_time=data['in_time'][:10])
+        data_instance = models.Geobong(id=int(data['id']), value1=int(data['value1']), value2=data['value2'], start_time=datetime.strptime(data['start_time'][:10], '%Y-%m-%d'), in_time=datetime.strptime(data['in_time'][:10], '%Y-%m-%d'))
         #db.refresh(data_instance)
     except Exception as err:
         data_instance = {}

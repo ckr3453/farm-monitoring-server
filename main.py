@@ -32,7 +32,6 @@ def get_db():
 
 @app.get("/FarmDatas", response_model=List[schemas.ItemBase])
 def get_list(response: Response, range: str, db: Session = Depends(get_db)):
-    # print(range)
     range_list = json.loads(range)
     items, total_cnt = queries.get_list(db, skip=range_list[0], limit=range_list[1]-range_list[0]+1)
     response.headers['Content-Range'] = str(total_cnt)
