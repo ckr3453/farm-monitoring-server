@@ -4,13 +4,31 @@ import database
 
 class Geobong(database.Base):
     __tablename__ = "geobong"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    building_no = Column(Integer, nullable=False)
+    room_no = Column(Integer, nullable=False)
+    pig_count = Column(Float, nullable=False)
+    room_temp = Column(Float)
+    baby_food_date = Column(DateTime)
+    room_date = Column(DateTime)
+    shipment_date = Column(DateTime)
 
-    id = Column('no', Integer, primary_key=True, nullable=False)
-    value1 = Column(Integer, nullable=False)
-    value2 = Column(Integer, default=None)
-    start_time = Column(DateTime, default=None)
-    in_time = Column(DateTime, default=None)
+    def __repr__(self):
+        return 'id=%s, building_no=%s, room_no=%s, pig_count=%s, room_temp=%s, baby_food_date=%s, room_date=%s, shipment_date=%s' % (
+            self.id, self.building_no, self.room_no, self.pig_count, self.room_temp, self.baby_food_date, self.room_date, self.shipment_date)
 
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'building_no': self.building_no,
+            'room_no': self.room_no,
+            'pig_count': self.pig_count,
+            'room_temp': self.room_temp,
+            'baby_food_date': self.baby_food_date,
+            'room_date': self.room_date,
+            'shipment_date': self.shipment_date
+        }
 
 # class Item(Base):
 #     __tablename__ = "items"

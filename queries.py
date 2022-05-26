@@ -1,9 +1,9 @@
 from datetime import datetime
 
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 import models
-import schemas
 
 
 def get_list(db: Session, skip: int, limit: int):
@@ -11,11 +11,13 @@ def get_list(db: Session, skip: int, limit: int):
 
 
 def get_one(db: Session, id: int):
-    return db.query(models.Geobong).filter(models.Geobong.id == id).first()
+    return db.query(models.Geobong).filter_by(id=id).first()
 
 
 def create(db: Session, data: dict):
-    data_instance = models.Geobong(id=data['no'], value1=data['value1'], value2=data['value2'], start_time=data['start_time'], in_time=data['in_time'])
+    # 수정필요
+    # data['shipment_date'] = datetime.strptime(data['baby_food_date'],'%Y%m%d') - datetime.timedelta(days=158)
+    data_instance = models.Geobong(pig_count=data['pig_count'], room_temp=data['room_temp'], baby_food_date=data['baby_food_date'], room_date=data['room_date'], shipment_date=data['shipment_date'])
     db.add(data_instance)
     db.commit()
     db.refresh(data_instance)
@@ -23,7 +25,6 @@ def create(db: Session, data: dict):
 
 
 def update(db: Session, id: int, data: dict):
-    print(data['start_time'][:10])
     try:
         row = {'id': int(data['id']), 'value1': int(data['value1']), 'value2': data['value2'], 'start_time': data['start_time'][:10], 'in_time': data['in_time'][:10]}
         db.query(models.Geobong).filter(models.Geobong.id == id).update(row)
