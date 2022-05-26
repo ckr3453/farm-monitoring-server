@@ -1,23 +1,38 @@
-from datetime import datetime
-
+import datetime
 from sqlalchemy.orm import Session
-from sqlalchemy import func
-
 import models
 
 
+def get_list_filter_resource(db: Session):
+    query = "SELECT distinct building_no from geobong"
+    result = db.execute(query).mappings().all()
+    print(result)
+    return [result, len(result)]
+
+
 def get_list(db: Session, skip: int, limit: int):
-    return [db.query(models.Geobong).offset(skip).limit(limit).all(), db.query(models.Geobong).count()]
+    # query = "SELECT *, datediff(now(), room_date)+22 as ilryung_days from geobong order by id limit {0}, {1}".format(skip, limit)
+    query = "SELECT *, datediff(now(), room_date)+22 as ilryung_days from geobong order by id"
+    result = db.execute(query).mappings().all()
+    return [result, db.query(models.Geobong).count()]
 
 
 def get_one(db: Session, id: int):
-    return db.query(models.Geobong).filter_by(id=id).first()
+    query = "SELECT *, datediff(now(), room_date)+22 as ilryung_days from geobong where id={0}".format(id)
+    result = db.execute(query).mappings().all()[0]
+    return result
 
 
 def create(db: Session, data: dict):
-    # 수정필요
-    # data['shipment_date'] = datetime.strptime(data['baby_food_date'],'%Y%m%d') - datetime.timedelta(days=158)
-    data_instance = models.Geobong(pig_count=data['pig_count'], room_temp=data['room_temp'], baby_food_date=data['baby_food_date'], room_date=data['room_date'], shipment_date=data['shipment_date'])
+    if data['room_date'] == '':
+        data['room_date'] = None
+    if data['baby_food_date'] == '':
+        data['baby_food_date'] = None
+        data['shipment_date'] = None
+    else:
+        data['shipment_date'] = datetime.datetime.strptime(data['baby_food_date'], '%Y-%m-%d') + datetime.timedelta(
+            days=158)
+    data_instance = models.Geobong(building_no=data['building_no'], room_no=data['room_no'], pig_count=data['pig_count'], room_temp=data['room_temp'], baby_food_date=data['baby_food_date'], room_date=data['room_date'], shipment_date=data['shipment_date'])
     db.add(data_instance)
     db.commit()
     db.refresh(data_instance)
@@ -25,16 +40,28 @@ def create(db: Session, data: dict):
 
 
 def update(db: Session, id: int, data: dict):
-    try:
-        row = {'id': int(data['id']), 'value1': int(data['value1']), 'value2': data['value2'], 'start_time': data['start_time'][:10], 'in_time': data['in_time'][:10]}
-        db.query(models.Geobong).filter(models.Geobong.id == id).update(row)
-        db.commit()
-        data_instance = models.Geobong(id=int(data['id']), value1=int(data['value1']), value2=data['value2'], start_time=datetime.strptime(data['start_time'][:10], '%Y-%m-%d'), in_time=datetime.strptime(data['in_time'][:10], '%Y-%m-%d'))
-        #db.refresh(data_instance)
-    except Exception as err:
-        data_instance = {}
-        print(err)
-    return data_instance
+    if data['room_date'] == '':
+        data['room_date'] = None
+    if data['baby_food_date'] == '':
+        data['baby_food_date'] = None
+        data['shipment_date'] = None
+    else:
+        data['shipment_date'] = datetime.datetime.strptime(data['baby_food_date'], '%Y-%m-%d') + datetime.timedelta(
+            days=158)
+    row = {
+        'id': int(data['id']),
+        'building_no': data['building_no'],
+        'room_no': int(data['room_no']),
+        'pig_count': float(data['pig_count']),
+        'room_temp': float(data['room_temp']),
+        'baby_food_date': data['baby_food_date'],
+        'room_date': data['room_date'],
+        'shipment_date': data['shipment_date']
+    }
+    db.query(models.Geobong).filter(models.Geobong.id == id).update(row)
+    db.commit()
+
+    return row
 
 
 def delete(db: Session, id: int):

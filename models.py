@@ -1,17 +1,17 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float
+from sqlalchemy import Column, Integer, String, DateTime, Float, Date
 import database
 
 
 class Geobong(database.Base):
     __tablename__ = "geobong"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    building_no = Column(Integer, nullable=False)
+    building_no = Column(String, nullable=False)
     room_no = Column(Integer, nullable=False)
     pig_count = Column(Float, nullable=False)
     room_temp = Column(Float)
-    baby_food_date = Column(DateTime)
-    room_date = Column(DateTime)
-    shipment_date = Column(DateTime)
+    baby_food_date = Column(Date)
+    room_date = Column(Date)
+    shipment_date = Column(Date)
 
     def __repr__(self):
         return 'id=%s, building_no=%s, room_no=%s, pig_count=%s, room_temp=%s, baby_food_date=%s, room_date=%s, shipment_date=%s' % (

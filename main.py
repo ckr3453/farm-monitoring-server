@@ -30,6 +30,14 @@ def get_db():
         db.close()
 
 
+@app.get("/listFilterResource")
+def get_filter(response: Response, db: Session = Depends(get_db)):
+    items, total_cnt = queries.get_list_filter_resource(db)
+    response.headers['Content-Range'] = str(total_cnt)
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+    return items
+
+
 @app.get("/FarmDatas", response_model=List[schemas.ItemBase])
 def get_list(response: Response, range: str, db: Session = Depends(get_db)):
     range_list = json.loads(range)
