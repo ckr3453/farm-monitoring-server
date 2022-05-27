@@ -31,8 +31,7 @@ def get_list(db: Session, filter: dict):
     # response = [dict(tup) for tup in result]
 
     query = "SELECT *, datediff(now(), room_date)+22 as ilryung_days from geobong "
-    print(filter)
-    if filter:
+    if 'building_no' in filter:
         query += "where building_no='{0}'".format(filter['building_no'])
     result = sql_query_exec(db, query+" order by id")
     return [result, len(result)]
@@ -61,9 +60,9 @@ def update(db: Session, id: int, data: schemas.GeobongRequest):
     geobong.room_no = data.room_no
     geobong.pig_count = data.pig_count
     geobong.room_temp = data.room_temp
-    geobong.baby_food_date = data.baby_food_date
+    geobong.baby_food_date = None if data.baby_food_date == '' else data.baby_food_date
     geobong.room_date = data.room_date
-    geobong.shipment_date = None if data.baby_food_date is None else datetime.datetime.strptime(data.baby_food_date, '%Y-%m-%d') \
+    geobong.shipment_date = None if data.baby_food_date in ('', None) else datetime.datetime.strptime(data.baby_food_date, '%Y-%m-%d') \
                                                                      + datetime.timedelta(days=158)
     db.commit()
 
