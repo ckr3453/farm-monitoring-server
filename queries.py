@@ -61,7 +61,7 @@ def update(db: Session, id: int, data: schemas.GeobongRequest):
     geobong.pig_count = data.pig_count
     geobong.room_temp = data.room_temp
     geobong.baby_food_date = None if data.baby_food_date == '' else data.baby_food_date
-    geobong.room_date = data.room_date
+    geobong.room_date = None if data.room_date == '' else data.room_date
     geobong.shipment_date = None if data.baby_food_date in ('', None) else datetime.datetime.strptime(data.baby_food_date, '%Y-%m-%d') \
                                                                      + datetime.timedelta(days=158)
     db.commit()
