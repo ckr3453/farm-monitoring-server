@@ -30,7 +30,7 @@ def get_list(db: Session, filter: dict):
     # result = db.query(models.Geobong, ilryung_days).filter(filter).order_by(asc(models.Geobong.id)).all()
     # response = [dict(tup) for tup in result]
 
-    query = "SELECT *, datediff(now(), room_date)+22 as ilryung_days from geobong "
+    query = "SELECT *, datediff(now(), baby_food_date)+22 as ilryung_days from geobong "
     if 'building_no' in filter:
         query += "where building_no='{0}'".format(filter['building_no'])
     result = sql_query_exec(db, query+" order by id")
@@ -38,7 +38,7 @@ def get_list(db: Session, filter: dict):
 
 
 def get_one(db: Session, id: int):
-    result = sql_query_exec(db, "SELECT *, datediff(now(), room_date)+22 as ilryung_days "
+    result = sql_query_exec(db, "SELECT *, datediff(now(), baby_food_date)+22 as ilryung_days "
                                 "from geobong "
                                 "where id={0}"
                             .format(id))
